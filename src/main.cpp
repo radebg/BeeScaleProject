@@ -17,18 +17,20 @@
 #include <HX711.h>
 
 
+
+
 // Setting up interrupt pins
 //-------------------------------
 #define wakePin 2					// pin used for waking up the Arduino (interrupt 0)
 #define wakePin2 3					// pin used for waking up the Arduino (interrupt 1)
 //-------------------------------
 
-//setting up pin for waking up GSM module
+//setting up pin for waking up GSM module  
 //-------------------------------
 const byte gsmWakePin = 4;			// pin  used for waking up the GSM module from sleep mode
 //-------------------------------
 
-//Setting up variables for measurement of the battery
+//Setting up variables for measurement of the battery  
 //-------------------------------
 int batteryMax = 100;
 //-------------------------------
