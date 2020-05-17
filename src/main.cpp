@@ -151,7 +151,7 @@ float ReadBattery(int loops)
 
 	We have to scale input voltage on that pin to be at maximum 1.1V when battery is full.
 	It can be done with voltage divider (see schematics)
-	With battery I use maximum value on the pin is 1035mV (on voltage divider), and I consider battery empty when value falls to 800)
+	With battery I use maximum value on the pin is 1035mV (on voltage divider), and I consider battery empty when value falls to 860)
 
 	*/
 	voltage = map(voltage, 860, 1035, 0, 100);
