@@ -45,7 +45,7 @@ const String thingSpeakUpadate = "GET http://api.thingspeak.com/update?api_key=0
 char print_date[16];						//char array for date and time 
 RTCDateTime dt;								//date and time class for ds3231
 DS3231 clock;								//define class for DS3231 clock
-byte ADay, AHour, AMinute, ASecond, ABits;	// define clock variables
+byte ADay, AHour, AMinute, ASecond, ABits;	//define clock variables
 bool ADy, A12h, Apm;						//define clock variables
 //-------------------------------
 
@@ -285,9 +285,12 @@ void PutArduinoToSleep()
 }
 void SignalForWakeUp()
 {
-	digitalWrite(LED_BUILTIN, HIGH);
-	delay(500);
-	digitalWrite(LED_BUILTIN, LOW);
+	for (int i=0;i<10;i++)
+	{
+		digitalWrite(LED_BUILTIN, HIGH);
+		delay(50);
+		digitalWrite(LED_BUILTIN, LOW);
+	}
 }
 void SetupWakeUpAlarm(int i)
 {
@@ -470,7 +473,7 @@ void setup()
 // Add the main program code into the continuous loop() function
 void loop()
 {
-	SetupWakeUpAlarm(30);		//1-every minute, 30-every half hour , 60-every hour
+	SetupWakeUpAlarm(30);		//Options are: 1-every minute, 30-every half hour , 60-every hour
 	PutScaleToSleep();
 	PutGsmToSleep();
 	PutArduinoToSleep();
