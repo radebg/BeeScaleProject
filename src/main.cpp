@@ -1,10 +1,8 @@
-// Visual Micro is in vMicro>General>Tutorial Mode
-// 
 /*
-    Name:       BeeScaleNew.ino
-    Created:	7/3/2019 5:50:14 PM
-    Author:     DANIJELA-PC\Danijela
-	Edited: 01/11/2019
+    Name:       BeeScale.cpp
+    Created:	17/5/2020 5:50:14 PM
+    Author:     RADE-PC\Rade
+	Edited: 17/05/2020
 */
 
 #include <RunningMedian.h>
