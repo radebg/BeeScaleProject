@@ -16,8 +16,11 @@
 #include "SparkFunBME280.h"
 #include <HX711.h>
 
-
-
+//Stting up initial state of the wakeup switch
+//-------------------------------
+int wakeupSwitch = 0;
+float tare=0;
+//-------------------------------
 
 // Setting up interrupt pins
 //-------------------------------
@@ -155,7 +158,7 @@ float ReadBattery(int loops)
 	It can be done with voltage divider (see schematics)
 	With battery I use maximum value on the pin is 1035mV (on voltage divider), and I consider battery empty when value falls to 860)
 
-	*/
+		*/
 	voltage = map(voltage, 860, 1035, 0, 100);
 
 	/*if (voltage > batteryMax)
@@ -163,7 +166,8 @@ float ReadBattery(int loops)
 		voltage = batteryMax;
 	}
 	else
-	{*/
+	{
+		*/
 		batteryMax = voltage;
 	//}
 
@@ -258,6 +262,7 @@ void wakeUp()
 	sleep_disable();
 	detachInterrupt(0);
 	detachInterrupt(1);
+	
 }
 void wakeUp2()
 {
@@ -265,6 +270,15 @@ void wakeUp2()
 	sleep_disable();
 	detachInterrupt(0);
 	detachInterrupt(1);
+
+	if (wakeupSwitch == 0)
+	{
+		wakeupSwitch=1;
+	}
+	else if (wakeupSwitch == 1)
+	{
+		wakeupSwitch=2;
+	}
 }
 void PutArduinoToSleep()
 {
@@ -392,7 +406,7 @@ void UploadToIot()
 	gsmSerial.println(F("AT+CIPSEND"));
 	delay(2000);
 	ReadGsmBuffer();
-	gsmSerial.println(thingSpeakUpadate + "&field1=" + String(ReadSht31Temp()) + "&field2=" + String(ReadSht31Humid()) + "&field3=" + String(ReadBattery(10)) + "&field4=" + String(ReadBmeTemperature()) + "&field5=" + String(ReadBmePressure()) + "&field6=" + String(ReadBmeHumid()) + "&field7=" + String(ReadWeight(10)) + "&field8=" + String(ReadSoil(10)));
+	gsmSerial.println(thingSpeakUpadate + "&field1=" + String(ReadSht31Temp()) + "&field2=" + String(ReadSht31Humid()) + "&field3=" + String(ReadBattery(10)) + "&field4=" + String(ReadBmeTemperature()) + "&field5=" + String(ReadBmePressure()) + "&field6=" + String(ReadBmeHumid()) + "&field7=" + String(tare + ReadWeight(10)) + "&field8=" + String(ReadSoil(10)));
 	delay(2000);
 	ReadGsmBuffer();
 	gsmSerial.println(String(char(26)));
@@ -479,13 +493,40 @@ void loop()
 	PutArduinoToSleep();
 
 	//----------------------------------------------------------
-	//Waking arduino if alarm (interrupt) is fired
+	//Waking arduino if alarm or button (interrupt 1 or 2) is fired/pressed
 	//----------------------------------------------------------
-	WakeUpGsm();
-	WakeUpScale();
-	SignalForWakeUp();
-	ResetScale(0);
-	//DisplayMeasurementsOnSerialMonitor();
-	UploadToIot();
+if (wakeupSwitch==0)
+	{
+		WakeUpGsm();
+		WakeUpScale();
+		SignalForWakeUp();
+		ResetScale(0);
+		//DisplayMeasurementsOnSerialMonitor();
+		UploadToIot();
+	}
+	else if(wakeupSwitch==1)
+	{
+		WakeUpGsm();
+		WakeUpScale();
+		SignalForWakeUp();
+		tare=tare + ReadWeight(10);	//keep value before beekeeper changes anything. If there are previous values add them also
+		
+
+		//TODO make some led lights go red or grin to indicate staus of the scale
+
+		//DisplayMeasurementsOnSerialMonitor();
+		//UploadToIot();
+	}
+	else if (wakeupSwitch==2)
+	{
+		WakeUpGsm();
+		WakeUpScale();
+		SignalForWakeUp();
+		scale.tare();	//tare scales to cancel any changes it came from the beekeeper. In float tare we are keeping changes from the last measure and readings from the scale from this point will be added to that value
+		
+		//DisplayMeasurementsOnSerialMonitor();
+		UploadToIot();
+	}
+
 }
 
