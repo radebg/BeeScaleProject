@@ -13,6 +13,7 @@
 #include <Wire.h>
 #include "SparkFunBME280.h"
 #include <HX711.h>
+#include <HX711-multi.h>
 
 //Stting up initial state of the wakeup switch
 //-------------------------------
@@ -92,7 +93,7 @@ float ReadWeight(int loops)
 
 	for (int i = 1; i <= loops; i++)
 	{
-		raw = scale.get_units(loops), 3;
+		raw = scale.get_units(loops),3;
 		measurements.add(raw);
 		delay(100);
 	}
@@ -138,7 +139,7 @@ float ReadBattery(int loops)
 	measurements.clear();
 
 
-	//map min and max voltage values on analog pin to scale o% to 100%
+	//map min and max voltage values on analog pin to scale 0% to 100%
 	/*
 
 	For clarification:
